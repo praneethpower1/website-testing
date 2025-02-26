@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KeySkillSet - Auto Translate</title>
+</head>
+<body>
+  <h1>Welcome to KeySkillSet</h1>
+  <div id="google_translate_element"></div>
+
+  <script>
+    // Fetch user's location and set language
+    fetch("http://ip-api.com/json")
+      .then(response => response.json())
+      .then(data => {
+        const country = data.countryCode;
+        setLanguage(country);
+      })
+      .catch(error => console.error("Error fetching location data:", error));
+
+    // Set language based on country
+    function setLanguage(country) {
+      let language = "en";
+      const languageMap = {
+        "IN": "hi",
+        "FR": "fr",
+        "ES": "es",
+        "CN": "zh",
+        "DE": "de",
+      };
+
+      if (languageMap[country]) {
+        language = languageMap[country];
+      }
+
+      translatePage(language);
+    }
+
+    // Auto-translate page
+    function translatePage(lang) {
+      const translateScript = document.createElement("script");
+      translateScript.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      document.body.appendChild(translateScript);
+
+      window.googleTranslateElementInit = function () {
+        new google.translate.TranslateElement({
+          pageLanguage: "en",
+          includedLanguages: lang,
+        }, "google_translate_element");
+      };
+    }
+  </script>
+</body>
+</html>
